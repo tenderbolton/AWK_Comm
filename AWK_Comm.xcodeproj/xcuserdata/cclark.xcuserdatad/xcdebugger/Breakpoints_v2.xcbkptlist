@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "484649266.891196"
+            timestampString = "485364499.510188"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "258"
-            endingLineNumber = "258"
+            startingLineNumber = "269"
+            endingLineNumber = "269"
             landmarkName = "ofApp::receiveBroadcasts()"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "484649279.623476"
+            timestampString = "485364499.510188"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "267"
-            endingLineNumber = "267"
+            startingLineNumber = "278"
+            endingLineNumber = "278"
             landmarkName = "ofApp::receiveBroadcasts()"
             landmarkType = "5">
          </BreakpointContent>
@@ -42,13 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "484649404.289454"
+            timestampString = "485364499.510188"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "288"
-            endingLineNumber = "288"
-            landmarkName = "ofApp::sendDataToClients()"
-            landmarkType = "5">
+            startingLineNumber = "299"
+            endingLineNumber = "299">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -58,12 +56,44 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/AWK_Client.cpp"
-            timestampString = "484649422.59527"
+            timestampString = "485364499.510188"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "58"
-            endingLineNumber = "58"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
             landmarkName = "AWK_Client::sendMessages()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/ofApp.cpp"
+            timestampString = "485364229.621308"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "5"
+            endingLineNumber = "5"
+            landmarkName = "ofApp::setup()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/ofApp.cpp"
+            timestampString = "485364499.510188"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "145"
+            endingLineNumber = "145"
+            landmarkName = "ofApp::draw()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

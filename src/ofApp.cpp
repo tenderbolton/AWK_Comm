@@ -2,6 +2,10 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    
+    ofSetVerticalSync(false);
+    ofSetFrameRate(200);
+    
     this->portReceiveClients = 6001;
     this->portReceiveBroadcast = 6000;
     this->portOutputClients = 6001;
@@ -105,17 +109,23 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    
+    ofSetColor(0);
+    
     float spacing = 100.0f;
     float initialYTitle = 50.0f;
     float initialY = 170.0f;
     float initialX = 50.0f;
     float lineSpacing = 20.0f;
-    float columnSpacing = 60.0f;
+    float columnSpacing = 150.0f;
     
     float bottomY = 360.0f;
     float bottomX = 50.0f;
     
     float maxItemsPerCol = 20.0f;
+    
+    float initialXClientList = 50.0f;
+    float initialYClientList = 250.0f;
     
     ofSetColor(0);
     
@@ -129,16 +139,20 @@ void ofApp::draw(){
     
     if (loadOK){
         
-        ofPushMatrix();
+        
         int cont = 0;
         for( std::map<string, AWK_Client*>::iterator it = clients.begin(); it != clients.end(); it++) {
-            ofTranslate(initialX + columnSpacing*(cont/maxItemsPerCol), initialYTitle + (9+cont%(int)maxItemsPerCol) * lineSpacing);
+            //ofLogNotice(ofToString(cont/maxItemsPerCol));
+            //ofLogNotice(ofToString(initialXClientList + (columnSpacing* truncf((cont/maxItemsPerCol)))));
+            ofPushMatrix();
+            ofTranslate(initialXClientList + (columnSpacing* truncf((cont/maxItemsPerCol))), initialYClientList + (cont%(int)maxItemsPerCol) * lineSpacing);
             it->second->draw();
+            ofPopMatrix();
             cont+=1;
         }
         
-        ofPopMatrix();
-        
+        ofSetColor(0);
+    
     }
     else{
         this->textRenderer->drawString("Loading error. Please check XML and run again.", initialX, initialY);

@@ -42,6 +42,13 @@ void AWK_Client::shutDown(){
 }
 
 void AWK_Client::draw(){
+    ofSetColor(0);
+    if(ofGetElapsedTimef()-this->timeSinceLastHeartBeat > 5.0f){
+        ofSetColor(255, 255, 128);
+    }
+    if(ofGetElapsedTimef()-this->timeSinceLastHeartBeat > 10.0f){
+        ofSetColor(255, 0, 0);
+    }
     this->textRenderer->drawString(this->ip + " - Age: " + ofToString(ofGetElapsedTimef()-this->timeSinceLastHeartBeat).substr(0,4) , 0, 0);
 }
 
