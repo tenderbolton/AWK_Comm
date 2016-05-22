@@ -29,6 +29,10 @@ class ofApp : public ofBaseApp{
         void receiveBroadcasts();
         void sendDataToClients();
         void killDeadClients();
+        void addOSCBroadcastMessage(ofxOscMessage* m);
+        void sendBroadcastMessages();
+        void clearBroadcastMessages();
+        void loadAllClients();
     
     private:
         ofxXmlSettings XML;
@@ -39,14 +43,27 @@ class ofApp : public ofBaseApp{
         ofxOscReceiver oscRecieverClients;
         ofxOscReceiver broadcaster;
     
+        ofxOscSender	senderBroadcast;
+        ofxOscSender	senderForcedBroadcast;
+    
         std::map<string, AWK_Client*> clients;
     
         int portReceiveClients;
         int portReceiveBroadcast;
         int portOutputClients;
     
+        string broadcastIP;
+    
+        string forcedBroadcastPrefix;
+        int forcedBroadcastLow;
+        int forcedBroadcastHigh;
+    
         int maxClientAge;
     
         bool loadOK;
+        bool doStandardBroadcast;
+        bool doRetransmission;
+    
+        queue<ofxOscMessage*> broadcastMessageBuffer;
 
 };

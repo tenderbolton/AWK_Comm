@@ -10,6 +10,14 @@ void ofApp::setup(){
     this->portReceiveBroadcast = 6000;
     this->portOutputClients = 6001;
     this->maxClientAge = 15;
+    this->broadcastIP = "255.255.255.255";
+    
+    this->forcedBroadcastPrefix = "192.168.2.";
+    this->forcedBroadcastLow = 1;
+    this->forcedBroadcastHigh = 254;
+    
+    this->doStandardBroadcast=false;
+    this->doRetransmission=false;
     
     this->textRenderer = new ofTrueTypeFont();
     this->textRendererSmall = new ofTrueTypeFont();
@@ -26,6 +34,7 @@ void ofApp::setup(){
     if(loadOK){
         oscRecieverClients.setup(portReceiveClients);
         broadcaster.setup(portReceiveBroadcast);
+        senderBroadcast.setup(this->broadcastIP, this->portOutputClients);
     }
 
 }
@@ -80,7 +89,28 @@ void ofApp::loadFromXML(){
                 loadOK = false;
                 throw std::exception();
             }
-
+            
+            int numBroadcastTag = XML.getNumTags("BROADCASTIP");
+            if(numBroadcastTag>0){
+                this->broadcastIP = XML.getAttribute("BROADCASTIP","ip","255.255.255.255");
+            }
+            else{
+                cout << "No BroadcastIP settings defined!" << endl;
+                loadOK = false;
+                throw std::exception();
+            }
+            
+            int numForcedBroadcastTag = XML.getNumTags("FORCED_BROADCAST");
+            if(numForcedBroadcastTag>0){
+                this->forcedBroadcastPrefix = XML.getAttribute("FORCED_BROADCAST","ipPrefix","192.168.2.");
+                this->forcedBroadcastLow = ofToInt(XML.getAttribute("FORCED_BROADCAST","minPostfix","1"));
+                this->forcedBroadcastHigh = ofToInt(XML.getAttribute("FORCED_BROADCAST","maxPostfix","254"));
+            }
+            else{
+                cout << "No BroadcastIP settings defined!" << endl;
+                loadOK = false;
+                throw std::exception();
+            }
 
             XML.popTag();
         }
@@ -135,7 +165,12 @@ void ofApp::draw(){
     this->textRendererSmall->drawString("Clients should send /heartbeat OSC message to port:" + ofToString(this->portReceiveClients), initialX, initialYTitle + 4 * lineSpacing);
     this->textRendererSmall->drawString("Client max age: " + ofToString(this->maxClientAge) + " seconds ", initialX, initialYTitle + 5 * lineSpacing);
     this->textRendererSmall->drawString("Registered clients: " + ofToString(this->clients.size()) , initialX, initialYTitle + 6 * lineSpacing);
-    this->textRendererSmall->drawString("FPS: " + ofToString(ofGetFrameRate()) , initialX, initialYTitle + 7 * lineSpacing);
+    
+    this->textRendererSmall->drawString("Do Retransmission: " + ofToString(this->doRetransmission) , initialX, initialYTitle + 7 * lineSpacing);
+    this->textRendererSmall->drawString("Do Broadcast: " + ofToString(this->doStandardBroadcast) , initialX, initialYTitle + 8 * lineSpacing);
+    
+    
+    this->textRendererSmall->drawString("FPS: " + ofToString(ofGetFrameRate()) , initialX, initialYTitle + 9 * lineSpacing);
     
     if (loadOK){
         
@@ -168,6 +203,39 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    switch (key) {
+        case 'b':
+        {
+            this->doStandardBroadcast = !doStandardBroadcast;
+            break;
+        }
+        case 'r':
+        {
+            this->doRetransmission = !this->doRetransmission;
+            break;
+        }
+        case 'l':
+        {
+            // loading missing clients
+            
+            loadAllClients();
+            
+            break;
+        }
+        case 'q':
+        {
+            this->maxClientAge += 1;
+            
+            break;
+        }
+        case 'a':
+        {
+            this->maxClientAge -= 1;
+            
+            break;
+        }
+
+    }
 
 }
 
@@ -276,10 +344,18 @@ void ofApp::receiveBroadcasts(){
         if(m->getAddress() == "/showdata" || m->getAddress() == "/heartbeat"){
             try {
                 
-                for( std::map<string, AWK_Client*>::iterator it = clients.begin(); it != clients.end(); it++) {
-                   
-                    it->second->addOSCInput(m);
+                if(doRetransmission){
+                
+                    for( std::map<string, AWK_Client*>::iterator it = clients.begin(); it != clients.end(); it++) {
+                       
+                        it->second->addOSCInput(m);
+                        
+                    }
                     
+                }
+                
+                if(doStandardBroadcast){
+                    this->addOSCBroadcastMessage(m);
                 }
                 
                 //deleting message
@@ -298,8 +374,14 @@ void ofApp::receiveBroadcasts(){
 }
 
 void ofApp::sendDataToClients(){
-    for( std::map<string, AWK_Client*>::iterator it = clients.begin(); it != clients.end(); it++) {
-        it->second->sendMessages();
+    
+    if(this->doRetransmission){
+        for( std::map<string, AWK_Client*>::iterator it = clients.begin(); it != clients.end(); it++) {
+            it->second->sendMessages();
+        }
+    }
+    if(this->doStandardBroadcast){
+        this->sendBroadcastMessages();
     }
 }
 
@@ -327,4 +409,61 @@ void ofApp::killDeadClients(){
     }
     
 }
+
+void ofApp::addOSCBroadcastMessage(ofxOscMessage* m){
+    
+    ofxOscMessage * mCopy = new ofxOscMessage(*(m));
+    this->broadcastMessageBuffer.push(mCopy);
+    
+}
+
+void ofApp::sendBroadcastMessages(){
+    //we send all available messages
+    while(broadcastMessageBuffer.size()>0){
+        ofxOscMessage* newMessage = this->broadcastMessageBuffer.front();
+        
+        senderBroadcast.sendMessage(*(newMessage));
+        
+        delete newMessage;
+        this->broadcastMessageBuffer.pop();
+    }
+    
+}
+
+void ofApp::clearBroadcastMessages(){
+    //we send all available messages
+    while(broadcastMessageBuffer.size()>0){
+        ofxOscMessage* newMessage = this->broadcastMessageBuffer.front();
+        delete newMessage;
+        this->broadcastMessageBuffer.pop();
+    }
+    
+}
+
+void ofApp::loadAllClients(){
+    
+    for (int i=this->forcedBroadcastLow; i<= this->forcedBroadcastHigh; i++){
+        
+        string senderIp = this->forcedBroadcastPrefix + ofToString(i);
+        
+        //ofLogNotice(ofToString(senderIp));
+        
+        std::map<string, AWK_Client*>::const_iterator it = clients.find(senderIp);
+        
+        if(it!=clients.end()){
+            //client found
+            it->second->gotHeartBeat();
+        }
+        else{
+            //we have a new client
+            AWK_Client* newClient = new AWK_Client();
+            newClient->setup(senderIp, "", this->portOutputClients, this->textRendererSmall);
+            clients.insert(std::pair<string, AWK_Client*>(senderIp, newClient));
+        }
+    }
+
+}
+
+
+
 
