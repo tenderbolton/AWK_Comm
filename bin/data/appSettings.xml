@@ -2,7 +2,7 @@
     <OSC_INPUT_CLIENTS port="6002"/>
     <OSC_INPUT_BROADCAST port="6000"/>
     <OSC_OUTPUT_CLIENTS port="6003"/>
-    <CLIENTS maxAge="15"/>
-    <BROADCASTIP ip="255.255.255.255"/>
-    <FORCED_BROADCAST ipPrefix="192.168.1." minPostfix="1" maxPostfix="254" />
+    <CLIENTS maxAge="2100"/>
+    <BROADCASTIP ip="192.168.7.255"/>
+    <FORCED_BROADCAST ipPrefix="192.168.2." minPostfix="11" maxPostfix="254" />
 </MAIN_SETTINGS>

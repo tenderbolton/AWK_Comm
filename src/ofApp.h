@@ -46,6 +46,8 @@ class ofApp : public ofBaseApp{
         ofxOscSender	senderBroadcast;
         ofxOscSender	senderForcedBroadcast;
     
+        //ofxOscSender	senderTEST;
+    
         std::map<string, AWK_Client*> clients;
     
         int portReceiveClients;
@@ -65,5 +67,7 @@ class ofApp : public ofBaseApp{
         bool doRetransmission;
     
         queue<ofxOscMessage*> broadcastMessageBuffer;
+    
+    
 
 };

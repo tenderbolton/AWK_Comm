@@ -35,6 +35,8 @@ void ofApp::setup(){
         oscRecieverClients.setup(portReceiveClients);
         broadcaster.setup(portReceiveBroadcast);
         senderBroadcast.setup(this->broadcastIP, this->portOutputClients);
+        
+        //senderTEST.setup("192.168.2.88", this->portOutputClients);
     }
 
 }
@@ -131,6 +133,11 @@ void ofApp::loadFromXML(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    //ofxOscMessage* newMessageTest = new ofxOscMessage();
+    //newMessageTest->setAddress("/test");
+    //this->senderTEST.sendMessage(*(newMessageTest));
+    //delete newMessageTest;
+    
     receiveHeartBeats();
     receiveBroadcasts();
     sendDataToClients();
